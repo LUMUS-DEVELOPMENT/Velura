@@ -1,12 +1,9 @@
 <script setup>
-import Header from "@/components/default/Header.vue";
-import Footer from "@/components/default/Footer.vue";
 </script>
 
 <template>
-  <Header />
+    <h1 class="text-3xl text-indigo-800">Default Layout</h1>
     <router-view></router-view>
-  <Footer />
 </template>
 
 <style scoped>
