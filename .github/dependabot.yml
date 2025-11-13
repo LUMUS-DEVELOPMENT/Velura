@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"       
+    directory: "/"                 
+    schedule:
+      interval: "weekly"         
+    ignore:                       
+      - dependency-name: "some-package"
+        versions: ["<2.0.0"]      
+    commit-message:
+      prefix: "deps"               
+    reviewers:
+      - "Crow613"
+      - "vardanm1993"

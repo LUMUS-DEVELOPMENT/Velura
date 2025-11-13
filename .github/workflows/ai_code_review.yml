@@ -1,0 +1,76 @@
+name: AI Code Review v0.0.1
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read         
+  pull-requests: write    
+  issues: write           
+
+jobs:
+  review:
+    name: Run AI Code Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "⚠️  Ai/Review/requirements.txt not found — skipping."
+          fi
+
+      - name: 🤖 Run AI Review
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          echo "Running AI Code Review..."
+          python review.py \
+            --project_dir="./" \
+            --extensions ".py" ".js" ".php" ".vue" ".html" ".css" \
+            --output="Ai/Review/review_results.txt"
+
+      - name: 💬 Comment PR with AI Review
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'EOF'
+          import os
+          from github import Github
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo_name = os.environ["GITHUB_REPOSITORY"]
+          ref = os.environ["GITHUB_REF"]
+          pr_number = int(ref.split('/')[-1])
+
+          g = Github(token)
+          repo = g.get_repo(repo_name)
+          pr = repo.get_pull(pr_number)
+
+          try:
+              with open("Ai/Review/review_results.txt", "r", encoding="utf-8") as f:
+                  review_text = f.read()
+          except FileNotFoundError:
+              review_text = "⚠️ Файл review_results.txt не найден."
+
+          review_text = review_text.strip()[:65000]
+          comment_body = f"🤖 **AI Code Review Results**\n\n{review_text or 'No results generated.'}"
+          pr.create_issue_comment(comment_body)
+          print("✅ Successfully posted AI review comment.")
+          EOF
