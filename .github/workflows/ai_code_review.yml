@@ -40,7 +40,7 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
           echo "Running AI Code Review..."
-          python review.py \
+          python Ai/Review/review.py \
             --project_dir="./" \
             --extensions ".py" ".js" ".php" ".vue" ".html" ".css" \
             --output="Ai/Review/review_results.txt"
