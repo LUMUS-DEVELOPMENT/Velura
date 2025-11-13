@@ -29,8 +29,8 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
+          if [ -f Ai/Review/requirements.txt ]; then
+            pip install -r Ai/Review/requirements.txt
           else
             echo "⚠️  Ai/Review/requirements.txt not found — skipping."
           fi
