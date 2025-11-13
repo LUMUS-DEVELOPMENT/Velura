@@ -54,7 +54,7 @@ parser.add_argument(
     help="Директории для исключения"
 )
 parser.add_argument("--max_tokens", type=int, default=4000, help="Максимальная длина кода для LLM")
-parser.add_argument("--model", default="gemini-2.5-flash", help="Модель LLM для анализа")
+parser.add_argument("--model", default="gemini-2.0-flash-lite", help="Модель LLM для анализа")
 parser.add_argument("--output", help="Сохранять результаты в файл")
 args = parser.parse_args()
 
