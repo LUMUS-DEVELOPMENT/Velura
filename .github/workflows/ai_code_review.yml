@@ -2,7 +2,7 @@ name: AI Code Review v0.0.1
 
 on:
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
     branches:
       - main
       - dev
@@ -33,12 +33,16 @@ jobs:
           if [ -f Ai/Review/requirements.txt ]; then
             pip install -r Ai/Review/requirements.txt
           else
-            echo "⚠️  Ai/Review/requirements.txt not found — skipping."
+            echo "⚠️ requirements.txt not found — skipping."
           fi
 
       - name: 🤖 Run AI Review
         env:
-          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY  }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           echo "Running AI Code Review..."
           python Ai/Review/review.py \
@@ -50,6 +54,8 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           python - <<'EOF'
           import os
@@ -58,7 +64,12 @@ jobs:
           token = os.environ["GITHUB_TOKEN"]
           repo_name = os.environ["GITHUB_REPOSITORY"]
           ref = os.environ["GITHUB_REF"]
-          pr_number = int(ref.split('/')[-1])
+
+          # PR number from refs/pull/123/merge
+          try:
+              pr_number = int(ref.split('/')[-2])
+          except:
+              pr_number = int(ref.split('/')[-1])
 
           g = Github(token)
           repo = g.get_repo(repo_name)
@@ -66,12 +77,11 @@ jobs:
 
           try:
               with open("Ai/Review/review_results.txt", "r", encoding="utf-8") as f:
-                  review_text = f.read()
+                  text = f.read()
           except FileNotFoundError:
-              review_text = "⚠️ Файл review_results.txt не найден."
+              text = "⚠️ Файл review_results.txt не найден."
 
-          review_text = review_text.strip()[:65000]
-          comment_body = f"🤖 **AI Code Review Results**\n\n{review_text or 'No results generated.'}"
-          pr.create_issue_comment(comment_body)
+          text = text.strip()[:65000]
+          pr.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{text}")
           print("✅ Successfully posted AI review comment.")
           EOF
