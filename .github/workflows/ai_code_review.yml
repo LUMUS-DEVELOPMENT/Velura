@@ -85,3 +85,6 @@ jobs:
           pr.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{text}")
           print("✅ Successfully posted AI review comment.")
           EOF
+      - name: Show AI Review
+        run: cat Ai/Review/review_results.txt
+
