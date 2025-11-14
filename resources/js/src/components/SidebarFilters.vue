@@ -1,7 +1,7 @@
 <script setup>
 
-import ProductList from "@/components/products/ProductList.vue";
-import Filter from "@/components/Filter.vue";
+import ProductList from "@/components/product/ProductList.vue";
+import Filter from "@/components/Filters.vue";
 
 </script>
 
