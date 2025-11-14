@@ -59,7 +59,7 @@ parser.add_argument("--exclude_dirs", nargs="+",
                     default=[".git", "node_modules", "vendor", "venv"],
                     help="Directories to exclude")
 parser.add_argument("--max_tokens", type=int, default=4000)
-parser.add_argument("--model", default="gemini-2.0-flash-lite")
+parser.add_argument("--model", default="gemini-2.0-flash-exp")
 parser.add_argument("--output", help="Write results to file")
 args = parser.parse_args()
 
