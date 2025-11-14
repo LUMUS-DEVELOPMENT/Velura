@@ -197,7 +197,7 @@ def post_comment(path: str, review: str):
         github_pr.create_issue_comment(
             f"### 🤖 AI Review: `{path}`\n\n{review[:65000]}"
         )
-        time.sleep(0.5)  # protection from GitHub rate limit
+        time.sleep(0.5)
     except Exception as e:
         logger.error(f"Failed to write PR comment: {e}")
 
@@ -217,8 +217,9 @@ def main():
 
     logger.info(f"Found {len(files)} code files")
 
-    results = []
+    all_reviews_text = ""  # собираем весь обзор для Issue
 
+    # Обработка файлов параллельно
     with ThreadPoolExecutor(max_workers=5) as pool:
         futures = {pool.submit(read_file, f): f for f in files}
 
@@ -227,19 +228,32 @@ def main():
             code = future.result()
 
             if not code:
-                results.append((fpath, "⚠️ Cannot read file"))
-                continue
+                review = "⚠️ Cannot read file"
+                logger.warning(f"{review}: {fpath}")
+            else:
+                review = review_code(fpath, code)
 
-            review = review_code(fpath, code)
-            results.append((fpath, review))
-            post_comment(fpath, review)
+            all_reviews_text += f"\n--- {fpath} ---\n{review}\n"
+            if github_pr:
+                try:
+                    github_pr.create_issue_comment(
+                        f"### 🤖 AI Review — `{fpath}`\n\n{review[:65000]}"
+                    )
+                    logger.info(f"💬 Comment added for {fpath}")
+                    time.sleep(0.5)
+                except Exception as e:
+                    logger.error(f"❌ Failed to comment PR for {fpath}: {e}")
 
-    if args.output:
-        with open(args.output, "w", encoding="utf-8") as out:
-            for p, r in results:
-                out.write(f"\n--- {p} ---\n{r}\n")
-        logger.info(f"Results saved to: {args.output}")
+    # Создание Issue с полным ревью всех файлов
+    if GITHUB_TOKEN and GITHUB_REPOSITORY:
+        try:
+            gh = Github(GITHUB_TOKEN)
+            repo = gh.get_repo(GITHUB_REPOSITORY)
+            issue_title = "🤖 Full AI Code Review"
+            issue_body = all_reviews_text[:65000]  # GitHub ограничение на тело Issue
+            repo.create_issue(title=issue_title, body=issue_body)
+            logger.info("✅ GitHub Issue created with full AI review")
+        except Exception as e:
+            logger.error(f"❌ Failed to create GitHub Issue: {e}")
 
-
-if __name__ == "__main__":
-    main()
+    logger.info("✅ AI Code Review completed for all files")
