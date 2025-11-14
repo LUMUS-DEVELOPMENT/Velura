@@ -37,7 +37,7 @@ jobs:
 
       - name: 🤖 Run AI Review
         env:
-          GOOGLE_API_KEY: ${{ secrets.COHERE_API_KEY  }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY  }}
         run: |
           echo "Running AI Code Review..."
           python Ai/Review/review.py \
