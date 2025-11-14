@@ -54,6 +54,7 @@ parser.add_argument("--exclude_dirs", nargs="+",
                     default=[".git", "node_modules", "vendor", "venv"],
                     help="Directories to exclude")
 parser.add_argument("--max_tokens", type=int, default=4000)
+parser.add_argument("--output", type=str, help="Write results to file")
 args = parser.parse_args()
 
 PROJECT_DIR = Path(args.project_dir).resolve()
