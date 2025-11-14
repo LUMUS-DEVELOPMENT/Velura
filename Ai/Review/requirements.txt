@@ -2,7 +2,7 @@ cohere>=5.2.0
 google-generativeai==0.8.5
 langchain>=0.1.0
 PyGithub>=1.55
-
+openai
 tqdm>=4.66.1
 python-dotenv>=1.0.0
 
