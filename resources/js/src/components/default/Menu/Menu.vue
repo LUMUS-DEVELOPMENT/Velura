@@ -17,10 +17,10 @@ import LiComponent from "@/components/ui/Li-component.vue";
         </button>
         <!-- Logo -->
         <div class="ml-4 flex lg:ml-0">
-          <a href="#">
+          <router-link :to="{name: 'home'}">
             <span class="sr-only">Your Company</span>
             <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="" class="h-8 w-auto" />
-          </a>
+          </router-link>
         </div>
         <!-- Flyout menus -->
         <el-popover-group class="group/popover-group hidden lg:ml-8 lg:block lg:self-stretch">
@@ -193,7 +193,7 @@ import LiComponent from "@/components/ui/Li-component.vue";
                 </div>
               </el-popover>
             </div>
-            <router-link to="#" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Company</router-link>
+            <router-link :to="{ name: 'products.index'}" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Products</router-link>
             <router-link to="#" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Stores</router-link>
           </div>
         </el-popover-group>
