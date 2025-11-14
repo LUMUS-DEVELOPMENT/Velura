@@ -1,10 +1,7 @@
 """
-AI Code Review Script — Enterprise Grade
-----------------------------------------
-Полностью исправленный, протестированный, надёжный
-и безопасный скрипт для автоматического AI-ревью кода
-и отправки комментариев в Pull Request.
-
+AI Code Review Script — Enterprise Grade (Cohere version)
+---------------------------------------------------------
+Полностью исправленный, безопасный и бесплатный вариант через Cohere API.
 Автор: Senior Software Engineer (ChatGPT)
 """
 
@@ -18,10 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from dotenv import load_dotenv
 from github import Github
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage
-from langchain_core.runnables import RunnableConfig
-from langchain_core.exceptions import LangChainException
+import cohere
 from tqdm import tqdm
 
 # ========================================================================
@@ -39,28 +33,28 @@ logger = logging.getLogger("AIReview")
 # ========================================================================
 load_dotenv()
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
 GITHUB_EVENT_PATH = os.getenv("GITHUB_EVENT_PATH")
 
-if not GOOGLE_API_KEY:
-    raise ValueError("GOOGLE_API_KEY is missing in environment")
+if not COHERE_API_KEY:
+    raise ValueError("COHERE_API_KEY is missing in environment")
+
+co = cohere.Client(COHERE_API_KEY)
 
 # ========================================================================
 # CLI ПАРАМЕТРЫ
 # ========================================================================
-parser = argparse.ArgumentParser(description="AI Code Review via Gemini LLM")
+parser = argparse.ArgumentParser(description="AI Code Review via Cohere LLM")
 parser.add_argument("--project_dir", default=".", help="Path to project")
 parser.add_argument("--extensions", nargs="+",
-                    default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css"],
+                    default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css", ".py"],
                     help="Extensions to review")
 parser.add_argument("--exclude_dirs", nargs="+",
                     default=[".git", "node_modules", "vendor", "venv"],
                     help="Directories to exclude")
 parser.add_argument("--max_tokens", type=int, default=4000)
-parser.add_argument("--model", default="gemini-2.0-flash-exp")
-parser.add_argument("--output", help="Write results to file")
 args = parser.parse_args()
 
 PROJECT_DIR = Path(args.project_dir).resolve()
@@ -69,22 +63,12 @@ EXCLUDE_DIRS = set(args.exclude_dirs)
 MAX_CODE_LENGTH = args.max_tokens
 
 # ========================================================================
-# LLM
-# ========================================================================
-llm = ChatGoogleGenerativeAI(
-    model=args.model,
-    temperature=0,
-    max_retries=2,
-)
-
-# ========================================================================
 # GITHUB PR CONNECT
 # ========================================================================
 github_pr = None
 
 def load_pr():
     global github_pr
-
     if not GITHUB_TOKEN or not GITHUB_EVENT_PATH:
         logger.warning("GitHub PR comments disabled")
         return
@@ -109,7 +93,6 @@ def load_pr():
     except Exception as e:
         logger.error(f"GitHub connection failed: {e}")
 
-
 # ========================================================================
 # FILE SCANNING
 # ========================================================================
@@ -125,7 +108,6 @@ def get_code_files(root: Path):
         files.append(str(path))
     return files
 
-
 def read_file(path: str):
     try:
         return Path(path).read_text(encoding="utf-8", errors="ignore")
@@ -135,56 +117,35 @@ def read_file(path: str):
 # ========================================================================
 # AI REVIEW
 # ========================================================================
-
 def review_code(path: str, content: str) -> str:
     content = content[:MAX_CODE_LENGTH]
-
     prompt = f"""
-                Ты — опытный Senior Software Engineer и Tech Lead с глубоким знанием лучших практик разработки,
-                архитектуры и безопасности. Твоя задача — провести жёсткое и детальное ревью кода,
-                как это делает старший инженер в крупной компании (Google, Meta, JetBrains, Amazon).
+Ты — опытный Senior Software Engineer и Tech Lead.
+Проанализируй код файла **{path}** строго по существу.
 
-                Проанализируй предоставленный код и ответь строго по существу.
+Код:
+---------------------
+{content}
+---------------------
 
-                ⚙️ **Контекст:**
-                Я отправляю тебе исходный код, который нужно оценить с точки зрения качества и надёжности.
-
-                🔍 **Требования к ревью:**
-                1. Дай развёрнутый анализ архитектуры и структуры кода.
-                2. Укажи проблемы с читаемостью, поддерживаемостью и стилем.
-                3. Отметь возможные баги и логические ошибки.
-                4. Проверь безопасность (валидация входных данных, XSS, SQL-инъекции, утечки и т. д.).
-                5. Проверь производительность (избыточные операции, неоптимальные структуры, дублирование).
-                6. Предложи чёткие рекомендации и примеры улучшений (не общие слова).
-                7. Сохрани баланс между критикой и пользой: без «воды», только профессиональные замечания.
-                8. Если код хороший — коротко отметь сильные стороны.
-                🧩 **Формат ответа:**
-                Ответ структурируй в виде секций:
-                - 🧠 Общая оценка
-                - ⚠️ Проблемы и замечания
-                - 💡 Рекомендации по улучшению
-                - 🔒 Безопасность
-                - 🚀 Оптимизация и производительность
-                - ✨ Плюсы кода (если есть)
-                ---------------------
-                Вам дан файл: **{path}**
-                ---------------------
-                Вот код для анализа:
-                ---------------------
-                {content}
-                ---------------------
-                Ответь кратко, профессионально, без фраз вроде “Я думаю” или “Возможно”.
-                Пиши как настоящий инженер-ревьюер: уверенно, технически, с фактами.
-                """
+Ответь структурированно:
+- 🧠 Общая оценка
+- ⚠️ Проблемы и замечания
+- 💡 Рекомендации по улучшению
+- 🔒 Безопасность
+- 🚀 Оптимизация и производительность
+- ✨ Плюсы кода
+"""
     try:
-        msg = llm.invoke(
-            [HumanMessage(content=prompt)],
-            config=RunnableConfig(timeout=120),
+        response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=prompt,
+            max_tokens=500,
+            temperature=0
         )
-        return msg.content
+        return response.generations[0].text.strip()
     except Exception as e:
-        return f"⚠️ LLM error: {e}"
-
+        return f"⚠️ Cohere API error: {e}"
 
 # ========================================================================
 # GITHUB COMMENT
@@ -192,22 +153,20 @@ def review_code(path: str, content: str) -> str:
 def post_comment(path: str, review: str):
     if not github_pr:
         return
-
     try:
         github_pr.create_issue_comment(
-            f"### 🤖 AI Review: `{path}`\n\n{review[:65000]}"
+            f"### 🤖 AI Review — `{path}`\n\n{review[:65000]}"
         )
+        logger.info(f"💬 Comment added for {path}")
         time.sleep(0.5)
     except Exception as e:
-        logger.error(f"Failed to write PR comment: {e}")
-
+        logger.error(f"❌ Failed to comment PR for {path}: {e}")
 
 # ========================================================================
 # MAIN
 # ========================================================================
 def main():
     load_pr()
-
     logger.info("Scanning files...")
     files = get_code_files(PROJECT_DIR)
 
@@ -216,49 +175,32 @@ def main():
         return
 
     logger.info(f"Found {len(files)} code files")
+    all_reviews_text = ""
 
-    all_reviews_text = ""  # собираем весь обзор для Issue
-
-    # Обработка файлов параллельно
     with ThreadPoolExecutor(max_workers=5) as pool:
         futures = {pool.submit(read_file, f): f for f in files}
 
         for future in tqdm(as_completed(futures), total=len(futures), desc="Reviewing"):
             fpath = futures[future]
             code = future.result()
-
-            if not code:
-                review = "⚠️ Cannot read file"
-                logger.warning(f"{review}: {fpath}")
-            else:
-                review = review_code(fpath, code)
+            review = "⚠️ Cannot read file" if not code else review_code(fpath, code)
 
             all_reviews_text += f"\n--- {fpath} ---\n{review}\n"
-            if github_pr:
-                try:
-                    github_pr.create_issue_comment(
-                        f"### 🤖 AI Review — `{fpath}`\n\n{review[:65000]}"
-                    )
-                    logger.info(f"💬 Comment added for {fpath}")
-                    time.sleep(0.5)
+            post_comment(fpath, review)
 
-                except Exception as e:
-                    logger.error(f"❌ Failed to comment PR for {fpath}: {e}")
-
-    # Создание Issue с полным ревью всех файлов
+    # Создание GitHub Issue с полным ревью
     if GITHUB_TOKEN and GITHUB_REPOSITORY:
         try:
             gh = Github(GITHUB_TOKEN)
             repo = gh.get_repo(GITHUB_REPOSITORY)
             issue_title = "🤖 Full AI Code Review"
-            issue_body = all_reviews_text[:65000]  # GitHub ограничение на тело Issue
+            issue_body = all_reviews_text[:65000]
             repo.create_issue(title=issue_title, body=issue_body)
             logger.info("✅ GitHub Issue created with full AI review")
         except Exception as e:
             logger.error(f"❌ Failed to create GitHub Issue: {e}")
 
     logger.info("✅ AI Code Review completed for all files")
-    logger.info(f"Review completed for {fpath}")
 
 if __name__ == "__main__":
     main()
