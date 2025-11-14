@@ -177,7 +177,7 @@ def main():
     logger.info(f"Found {len(files)} code files")
     all_reviews_text = ""
 
-    with ThreadPoolExecutor(max_workers=5) as pool:
+    with ThreadPoolExecutor(max_workers=2) as pool:
         futures = {pool.submit(read_file, f): f for f in files}
 
         for future in tqdm(as_completed(futures), total=len(futures), desc="Reviewing"):
