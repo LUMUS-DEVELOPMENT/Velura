@@ -138,7 +138,7 @@ def review_code(path: str, content: str) -> str:
 """
     try:
         response = co.generate(
-            model='command-xlarge-nightly',
+            model="command-light",
             prompt=prompt,
             max_tokens=1500,
             temperature=0
