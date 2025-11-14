@@ -4,7 +4,6 @@ AI Code Review Script — Enterprise Grade (Cohere version)
 Полностью исправленный, безопасный и бесплатный вариант через Cohere API.
 Автор: Senior Software Engineer (ChatGPT)
 """
-
 import os
 import json
 import time
@@ -188,7 +187,6 @@ def main():
             all_reviews_text += f"\n--- {fpath} ---\n{review}\n"
             post_comment(fpath, review)
 
-    # Создание GitHub Issue с полным ревью
     if GITHUB_TOKEN and GITHUB_REPOSITORY:
         try:
             gh = Github(GITHUB_TOKEN)
