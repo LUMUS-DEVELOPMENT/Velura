@@ -140,7 +140,7 @@ def review_code(path: str, content: str) -> str:
         response = co.generate(
             model='command-xlarge-nightly',
             prompt=prompt,
-            max_tokens=500,
+            max_tokens=1500,
             temperature=0
         )
         return response.generations[0].text.strip()
@@ -198,6 +198,11 @@ def main():
             logger.info("✅ GitHub Issue created with full AI review")
         except Exception as e:
             logger.error(f"❌ Failed to create GitHub Issue: {e}")
+
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write(all_reviews_text)
+        logger.info(f"Results saved to {args.output}")
 
     logger.info("✅ AI Code Review completed for all files")
 
