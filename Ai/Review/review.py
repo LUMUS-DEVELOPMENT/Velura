@@ -241,6 +241,7 @@ def main():
                     )
                     logger.info(f"💬 Comment added for {fpath}")
                     time.sleep(0.5)
+
                 except Exception as e:
                     logger.error(f"❌ Failed to comment PR for {fpath}: {e}")
 
@@ -257,3 +258,7 @@ def main():
             logger.error(f"❌ Failed to create GitHub Issue: {e}")
 
     logger.info("✅ AI Code Review completed for all files")
+    logger.info(f"Review completed for {fpath}")
+
+if __name__ == "__main__":
+    main()
