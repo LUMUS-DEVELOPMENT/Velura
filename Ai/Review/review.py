@@ -53,8 +53,16 @@ parser.add_argument("--project_dir", default=".", help="Path to project")
 parser.add_argument(
     "--extensions",
     nargs="+",
-    default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css", ".py"],
+    default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css"],
     help="Extensions to review",
+)
+parser.add_argument(
+    "--exclude_dirs", nargs="+", default= [
+        ".git", "node_modules", "venv",
+        "vendor", "_docker", ".py", ".txt",
+        ".yml",".md"
+    ],
+    help="Директории для исключения"
 )
 parser.add_argument("--max_tokens", type=int, default=1200, help="Max tokens for model response")
 parser.add_argument("--max_workers", type=int, default=1, help="Number of parallel file processing workers")
@@ -87,7 +95,7 @@ def load_pr() -> None:
         if not isinstance(pr_number, int):
             logger.warning("Not a pull_request event (PR number missing). Skipping PR comments.")
             return
-        gh = Github(GITHUB_TOKEN)
+        gh = Github(auth=Github.Auth.Token(GITHUB_TOKEN))
         repo = gh.get_repo(GITHUB_REPOSITORY)
         github_pr = repo.get_pull(pr_number)
         logger.info("Connected to PR #%s", pr_number)
