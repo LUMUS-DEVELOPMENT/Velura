@@ -1,13 +1,13 @@
 <script setup>
 
 import Category from "@/components/Category.vue";
-import ProductList from "@/components/products/ProductList.vue";
-import Aside from  '@/components/Aside.vue'
+import ProductList from "@/components/product/ProductList.vue";
+import Aside from '@/components/SidebarFilters.vue'
 
 </script>
 
 <template>
-  <Category />
+  <Category  />
   <Aside />
   <div class="bg-white">
     <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
