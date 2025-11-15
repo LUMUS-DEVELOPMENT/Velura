@@ -1,4 +1,5 @@
 <script setup>
+defineOptions({name:"CardGrid"})
 defineProps({
     gap: {type: String, default: 'gap-5'}
 })
