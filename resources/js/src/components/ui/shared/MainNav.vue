@@ -1,6 +1,7 @@
 <script setup>
 import useWomen from "@/composables/menu/useWomen.js";
 import useMen from "@/composables/menu/useMen.js";
+import NavItem from "@/components/ui/shared/menu/NavItem.vue";
 
 defineOptions({name: "MainNav" })
 const womenMenu = useWomen();

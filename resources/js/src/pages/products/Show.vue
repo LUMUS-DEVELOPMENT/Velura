@@ -2,7 +2,6 @@
 import {useRoute} from "vue-router";
 import {useProducts} from "@/composables/useProducts.js";
 import ProductCardContent from "@/components/product/ProductCardContent.vue";
-import AddToCartButton from "@/components/ui/AddToCartButton.vue";
 
 const route = useRoute()
 const { getProduct } = useProducts()
