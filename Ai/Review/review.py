@@ -263,22 +263,20 @@ def main() -> None:
 
     aggregated_text = "\n".join(f"\n--- {p} ---\n{r}\n" for p, r in results)
 
-    if GITHUB_TOKEN and GITHUB_REPOSITORY:
-        try:
-             logger.info("Starting AI Code Review...")
-                load_pr()
-                 gh = Github(GITHUB_TOKEN)
-                if PR_NUMBER:
-                    logger.info("Pull Request number is %d", PR_NUMBER)
-                else:
-                    logger.warning("No PR number detected, skipping PR comments.")
+   if GITHUB_TOKEN and GITHUB_REPOSITORY:
+       try:
+           gh = Github(GITHUB_TOKEN)
+           if PR_NUMBER:
+               logger.info("Pull Request number is %d", PR_NUMBER)
+               repo = gh.get_repo(GITHUB_REPOSITORY)
+               pr = repo.get_pull(PR_NUMBER)
+               pr.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{aggregated_text[:65000]}")
+               logger.info("✅ Successfully posted AI review comment.")
+           else:
+               logger.warning("No PR number detected, skipping PR comments.")
+       except Exception as e:
+           logger.error("❌ Failed to create GitHub comment: %s", e)
 
-              repo = gh.get_repo(GITHUB_REPOSITORY)
-              repo.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{aggregated_text[:65000]}")
-              print("✅ Successfully posted AI review comment.")
-
-          except Exception as e:
-              print(f"❌ Failed to create GitHub comment: {e}")
     if args.output:
         try:
             out_path = Path(args.output)
