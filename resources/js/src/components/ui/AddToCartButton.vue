@@ -1,5 +1,5 @@
 <script setup>
-
+defineOptions({ name: "AddToCartButton"})
 </script>
 
 <template>
