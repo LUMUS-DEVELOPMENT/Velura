@@ -1,5 +1,5 @@
 <script setup>
-import FilterSection from "@/components/ui/filters/FilterSection.vue";
+import FilterSection from "@/components/ui/features/filters/FilterSection.vue";
 
 defineProps({
   links: Array,
