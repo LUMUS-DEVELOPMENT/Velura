@@ -1,7 +1,6 @@
 <script setup>
 
-import UlComponent from "@/components/ui/Ul-component.vue";
-import LiComponent from "@/components/ui/Li-component.vue";
+
 </script>
 
 <template>
@@ -50,43 +49,43 @@ import LiComponent from "@/components/ui/Li-component.vue";
                 </div>
                 <div>
                   <p id="women-clothing-heading-mobile" class="font-medium text-gray-900">Clothing</p>
-                  <UlComponent id="women-clothing-heading-mobile" ariaLabelledby="women-clothing-heading-mobile" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Tops', path:'#' },
-                        { name:'Dresses', path:'#' },
-                        { name:'Pants', path:'#' },
-                        { name:'Denim', path:'#' },
-                        { name:'Sweaters', path:'#' },
-                        { name:'T-Shirts', path:'#' },
-                        { name:'Jackets', path:'#' },
-                        { name:'Browse All', path:'#' }
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="women-clothing-heading-mobile" ariaLabelledby="women-clothing-heading-mobile" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Tops', path:'#' },-->
+<!--                        { name:'Dresses', path:'#' },-->
+<!--                        { name:'Pants', path:'#' },-->
+<!--                        { name:'Denim', path:'#' },-->
+<!--                        { name:'Sweaters', path:'#' },-->
+<!--                        { name:'T-Shirts', path:'#' },-->
+<!--                        { name:'Jackets', path:'#' },-->
+<!--                        { name:'Browse All', path:'#' }-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
                 <div>
                   <p id="women-accessories-heading-mobile" class="font-medium text-gray-900">Accessories</p>
-                  <UlComponent id="women-accessories-heading-mobile" ariaLabelledby="women-accessories-heading-mobile" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Watches', path:'#' },
-                        { name:'Wallets', path:'#' },
-                        { name:'Bags', path:'#'},
-                        { name:'Sunglasses', path:'#' },
-                        { name:'Hats', path:'#'},
-                        { name:'Belts', path:'#'}
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="women-accessories-heading-mobile" ariaLabelledby="women-accessories-heading-mobile" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Watches', path:'#' },-->
+<!--                        { name:'Wallets', path:'#' },-->
+<!--                        { name:'Bags', path:'#'},-->
+<!--                        { name:'Sunglasses', path:'#' },-->
+<!--                        { name:'Hats', path:'#'},-->
+<!--                        { name:'Belts', path:'#'}-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
                 <div>
                   <p id="women-brands-heading-mobile" class="font-medium text-gray-900">Brands</p>
-                  <UlComponent id="women-brands-heading-mobile" ariaLabelledby="women-brands-heading-mobile" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Full Nelson', path:'#' },
-                        { name:'My Way', path:'#' },
-                        { name:'Re-Arranged', path:'#'},
-                        { name:'Counterfeit', path:'#' },
-                        { name:'Significant Other', path:'#'}
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="women-brands-heading-mobile" ariaLabelledby="women-brands-heading-mobile" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Full Nelson', path:'#' },-->
+<!--                        { name:'My Way', path:'#' },-->
+<!--                        { name:'Re-Arranged', path:'#'},-->
+<!--                        { name:'Counterfeit', path:'#' },-->
+<!--                        { name:'Significant Other', path:'#'}-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
               </div>
               <div hidden class="space-y-10 px-4 pt-10 pb-8">
@@ -110,41 +109,41 @@ import LiComponent from "@/components/ui/Li-component.vue";
                 </div>
                 <div>
                   <p id="men-clothing-heading-mobile" class="mt-6 flex flex-col space-y-6">Clothing</p>
-                  <UlComponent id="heading" ariaLabelledby="men-clothing-heading-mobile" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Tops', path:'#' },
-                        { name:'Pants', path:'#' },
-                        { name:'Sweaters', path:'#'},
-                        { name:'T-Shirts', path:'#' },
-                        { name:'Jackets', path:'#'},
-                        { name:'Activewear', path:'#' },
-                        { name:'Browse All', path:'#' },
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="heading" ariaLabelledby="men-clothing-heading-mobile" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Tops', path:'#' },-->
+<!--                        { name:'Pants', path:'#' },-->
+<!--                        { name:'Sweaters', path:'#'},-->
+<!--                        { name:'T-Shirts', path:'#' },-->
+<!--                        { name:'Jackets', path:'#'},-->
+<!--                        { name:'Activewear', path:'#' },-->
+<!--                        { name:'Browse All', path:'#' },-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
                 <div>
                   <p id="men-accessories-heading-mobile" class="font-medium text-gray-900">Accessories</p>
-                  <UlComponent id="heading" ariaLabelledby="Accessories-heading" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Watches', path:'#' },
-                        { name:'Wallets', path:'#' },
-                        { name:'Bags', path:'#'},
-                        { name:'Sunglasses', path:'#' },
-                        { name:'Hats', path:'#'},
-                        { name:'Belts', path:'#' }
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="heading" ariaLabelledby="Accessories-heading" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Watches', path:'#' },-->
+<!--                        { name:'Wallets', path:'#' },-->
+<!--                        { name:'Bags', path:'#'},-->
+<!--                        { name:'Sunglasses', path:'#' },-->
+<!--                        { name:'Hats', path:'#'},-->
+<!--                        { name:'Belts', path:'#' }-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
                 <div>
                   <p id="men-brands-heading-mobile" class="font-medium text-gray-900">Brands</p>
-                  <UlComponent id="heading" ariaLabelledby="men-brands-heading-mobile" className="mt-6 flex flex-col space-y-6">
-                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[
-                        { name:'Re-Arranged', path:'#' },
-                        { name:'Counterfeit', path:'#' },
-                        { name:'Full Nelson', path:'#'},
-                        { name:'My Way', path:'#' }
-                    ]" />
-                  </UlComponent>
+<!--                  <UlComponent id="heading" ariaLabelledby="men-brands-heading-mobile" className="mt-6 flex flex-col space-y-6">-->
+<!--                    <LiComponent className="-m-2 block p-2 text-gray-500" liClassName="flow-root" :links="[-->
+<!--                        { name:'Re-Arranged', path:'#' },-->
+<!--                        { name:'Counterfeit', path:'#' },-->
+<!--                        { name:'Full Nelson', path:'#'},-->
+<!--                        { name:'My Way', path:'#' }-->
+<!--                    ]" />-->
+<!--                  </UlComponent>-->
                 </div>
               </div>
             </el-tab-panels>
