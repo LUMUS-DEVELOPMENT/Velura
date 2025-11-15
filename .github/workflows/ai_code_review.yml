@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - dev
+      - crow613/velura
+      - vardanm1993
   workflow_dispatch:
 
 permissions:
