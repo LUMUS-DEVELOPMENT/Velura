@@ -12,6 +12,7 @@ import time
 import argparse
 import logging
 import random
+import logging
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict
@@ -60,7 +61,7 @@ parser.add_argument(
     "--exclude_dirs", nargs="+", default= [
         ".git", "node_modules", "venv",
         "vendor", "_docker", ".py", ".txt",
-        ".yml",".md"
+        ".yml",".md","public"
     ],
     help="Директории для исключения"
 )
@@ -190,6 +191,53 @@ def post_pr_comment(path: str, review_text: str) -> None:
     except Exception as e:
         logger.error("Failed posting PR comment for %s: %s", path, e)
 
+
+
+
+# -------------------------
+# Main
+# -------------------------
+
+
+logger = logging.getLogger(__name__)
+
+PR_NUMBER = None
+
+def load_pr():
+    """
+    Получает номер Pull Request из GitHub Actions environment.
+    Сначала пытается взять из события GitHub, затем из refs.
+    """
+    global PR_NUMBER
+
+    event_path = os.environ.get("GITHUB_EVENT_PATH")
+    ref = os.environ.get("GITHUB_REF")
+
+    if not event_path and not ref:
+        logger.warning("No GITHUB_EVENT_PATH or GITHUB_REF found.")
+        return None
+    if event_path and os.path.exists(event_path):
+        try:
+            with open(event_path, "r", encoding="utf-8") as f:
+                event_data = json.load(f)
+            if "pull_request" in event_data and "number" in event_data["pull_request"]:
+                PR_NUMBER = event_data["pull_request"]["number"]
+                logger.info("Detected PR number from event: %d", PR_NUMBER)
+                return PR_NUMBER
+        except Exception as e:
+            logger.warning("Failed to load PR number from event file: %s", e)
+    if ref and "refs/pull/" in ref:
+        try:
+            PR_NUMBER = int(ref.split("/")[2])
+            logger.info("Detected PR number from ref: %d", PR_NUMBER)
+            return PR_NUMBER
+        except Exception as e:
+            logger.warning("Failed to parse PR number from ref: %s", e)
+
+    logger.warning("PR number not found.")
+    return None
+
+
 # -------------------------
 # Main
 # -------------------------
@@ -217,12 +265,20 @@ def main() -> None:
 
     if GITHUB_TOKEN and GITHUB_REPOSITORY:
         try:
-            gh = Github(GITHUB_TOKEN)
-            repo = gh.get_repo(GITHUB_REPOSITORY)
-            repo.create_issue(title="🤖 Full AI Code Review", body=aggregated_text[:65000])
-        except Exception as e:
-            logger.error("Failed to create GitHub Issue: %s", e)
+             logger.info("Starting AI Code Review...")
+                load_pr()
+                 gh = Github(GITHUB_TOKEN)
+                if PR_NUMBER:
+                    logger.info("Pull Request number is %d", PR_NUMBER)
+                else:
+                    logger.warning("No PR number detected, skipping PR comments.")
 
+              repo = gh.get_repo(GITHUB_REPOSITORY)
+              repo.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{aggregated_text[:65000]}")
+              print("✅ Successfully posted AI review comment.")
+
+          except Exception as e:
+              print(f"❌ Failed to create GitHub comment: {e}")
     if args.output:
         try:
             out_path = Path(args.output)
