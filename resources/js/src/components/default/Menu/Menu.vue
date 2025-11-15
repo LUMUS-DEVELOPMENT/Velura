@@ -1,6 +1,6 @@
 <script setup>
-import LinkList from "@/components/ui/LinkList.vue";
-import MainNav from "@/components/ui/MainNav.vue";
+import LinkList from "@/components/ui/shared/LinkList.vue";
+import MainNav from "@/components/ui/shared/MainNav.vue";
 
 </script>
 <template>

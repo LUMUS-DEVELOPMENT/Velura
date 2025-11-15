@@ -1,6 +1,6 @@
 <script setup>
-import FilterButton from "@/components/ui/filters/FilterButton.vue";
-import FilterInput from "@/components/ui/filters/FilterInput.vue";
+import FilterButton from "@/components/ui/features/filters/FilterButton.vue";
+import FilterInput from "@/components/ui/features/filters/FilterInput.vue";
 
 defineProps({
   command: String,
