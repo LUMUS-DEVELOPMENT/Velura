@@ -204,8 +204,11 @@ def main() -> None:
             post_pr_comment(fpath, review)
 
     aggregated_text = "\n".join(f"\n--- {p} ---\n{r}\n" for p, r in results)
-
-    # Post aggregated review comment
+    if not PR_NUMBER and GITHUB_TOKEN and GITHUB_REPOSITORY:
+        gh = Github(GITHUB_TOKEN)
+        repo = gh.get_repo(GITHUB_REPOSITORY)
+        repo.create_issue(title="🤖 AI Code Review (No PR)", body=aggregated_text[:65000])
+        logger.info("✅ Created GitHub Issue with AI review because PR not found.")
     if GITHUB_TOKEN and GITHUB_REPOSITORY and PR_NUMBER:
         try:
             gh = Github(GITHUB_TOKEN)
@@ -218,7 +221,6 @@ def main() -> None:
     else:
         logger.warning("Skipping aggregated PR comment (missing PR number or GitHub credentials).")
 
-    # Write to output file
     if args.output:
         try:
             out_path = Path(args.output)
