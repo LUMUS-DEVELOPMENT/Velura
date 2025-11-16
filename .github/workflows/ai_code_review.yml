@@ -24,6 +24,11 @@ jobs:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
+      - name: 📝 Get changed files
+        id: changed_files
+        run: |
+          echo "CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
@@ -38,7 +43,7 @@ jobs:
             echo "⚠️ requirements.txt not found — skipping."
           fi
 
-      - name: 🤖 Run AI Review
+      - name: 🤖 Run AI Review only for changed files
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,10 +51,9 @@ jobs:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           GITHUB_REF: ${{ github.ref }}
         run: |
-          echo "Running AI Code Review..."
+          echo "Running AI Code Review only for changed files..."
           python Ai/Review/review.py \
-            --project_dir="./" \
-            --extensions ".py" ".js" ".php" ".vue" ".html" ".css" \
+            --files ${{ steps.changed_files.outputs.CHANGED }} \
             --output="Ai/Review/review_results.txt"
 
       - name: 💬 Comment PR with AI Review
@@ -87,6 +91,6 @@ jobs:
           pr.create_issue_comment(f"🤖 **AI Code Review Results**\n\n{text}")
           print("✅ Successfully posted AI review comment.")
           EOF
+
       - name: Show AI Review
         run: cat Ai/Review/review_results.txt
-
