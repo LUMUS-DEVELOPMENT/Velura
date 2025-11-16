@@ -49,7 +49,7 @@ client = OpenAI(base_url="https://api.cohere.ai/compatibility/v1", api_key=COHER
 # CLI Arguments
 # -------------------------
 parser = argparse.ArgumentParser(description="AI Code Review via Cohere Compatibility API")
-parser.add_argument("--files")
+
 parser.add_argument(
     "--files",
     type=str,
@@ -59,6 +59,7 @@ parser.add_argument(
     help="File containing list of changed files"
 )
 
+parser.add_argument("--project_dir", default=".", help="Path to project")
 parser.add_argument("--extensions", nargs="+", default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css"], help="Extensions to review")
 parser.add_argument("--exclude_dirs", nargs="+", default=[".git", "node_modules", "venv", "vendor", "_docker", ".py", ".txt", ".yml", ".md", "public"], help="Dirs to exclude")
 parser.add_argument("--max_tokens", type=int, default=1200, help="Max tokens for model response")
@@ -66,6 +67,7 @@ parser.add_argument("--max_workers", type=int, default=1, help="Number of parall
 parser.add_argument("--output", type=str, help="Write full aggregated results to this file")
 parser.add_argument("--model", type=str, default="command-a-03-2025", help="Cohere chat model")
 parser.add_argument("--chunk_size_chars", type=int, default=100000, help="Max characters of file to send to model")
+
 args = parser.parse_args()
 
 
@@ -78,10 +80,22 @@ MAX_CODE_TOKENS = args.max_tokens
 MODEL = args.model
 CHUNK_SIZE_CHARS = args.chunk_size_chars
 
-def parse_changed_files(files_arg: str) -> List[str]:
-    if not files_arg:
+def get_changed_files():
+    event_path = os.getenv("GITHUB_EVENT_PATH")
+    if not event_path or not Path(event_path).exists():
         return []
-    return [f.strip() for f in files_arg.split(" ") if f.strip()]
+
+    with open(event_path, "r") as f:
+        event = json.load(f)
+
+    files = []
+    if "pull_request" in event:
+        pr_files = event["pull_request"].get("files", [])
+        for f in pr_files:
+            files.append(f["filename"])
+
+    return files
+
 # -------------------------
 # GitHub PR helper
 # -------------------------
