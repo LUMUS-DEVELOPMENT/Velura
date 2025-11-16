@@ -49,6 +49,16 @@ client = OpenAI(base_url="https://api.cohere.ai/compatibility/v1", api_key=COHER
 # CLI Arguments
 # -------------------------
 parser = argparse.ArgumentParser(description="AI Code Review via Cohere Compatibility API")
+
+parser.add_argument(
+    "--files",
+    type=str,
+    required=False,
+    nargs="?",
+    const=None,
+    help="File containing list of changed files"
+)
+
 parser.add_argument("--project_dir", default=".", help="Path to project")
 parser.add_argument("--extensions", nargs="+", default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css"], help="Extensions to review")
 parser.add_argument("--exclude_dirs", nargs="+", default=[".git", "node_modules", "venv", "vendor", "_docker", ".py", ".txt", ".yml", ".md", "public"], help="Dirs to exclude")
@@ -57,7 +67,11 @@ parser.add_argument("--max_workers", type=int, default=1, help="Number of parall
 parser.add_argument("--output", type=str, help="Write full aggregated results to this file")
 parser.add_argument("--model", type=str, default="command-a-03-2025", help="Cohere chat model")
 parser.add_argument("--chunk_size_chars", type=int, default=100000, help="Max characters of file to send to model")
+
 args = parser.parse_args()
+
+
+
 
 PROJECT_DIR = Path(args.project_dir).resolve()
 EXTENSIONS = tuple(args.extensions)
@@ -65,6 +79,22 @@ MAX_WORKERS = max(1, args.max_workers)
 MAX_CODE_TOKENS = args.max_tokens
 MODEL = args.model
 CHUNK_SIZE_CHARS = args.chunk_size_chars
+
+def get_changed_files():
+    event_path = os.getenv("GITHUB_EVENT_PATH")
+    if not event_path or not Path(event_path).exists():
+        return []
+
+    with open(event_path, "r") as f:
+        event = json.load(f)
+
+    files = []
+    if "pull_request" in event:
+        pr_files = event["pull_request"].get("files", [])
+        for f in pr_files:
+            files.append(f["filename"])
+
+    return files
 
 # -------------------------
 # GitHub PR helper
@@ -187,12 +217,25 @@ def main() -> None:
     logger.info("Starting AI Code Review...")
     load_pr()
 
-    files = get_code_files(PROJECT_DIR)
-    if not files:
-        logger.warning("No files found for analysis.")
-        return
+    # -------------------------
+    # Select files (changed or full scan)
+    # -------------------------
+    if args.files:
+        files = parse_changed_files(args.files)
+        logger.info("Using only changed files: %d", len(files))
+    else:
+        files = get_code_files(PROJECT_DIR)
+        logger.info("No --files provided, scanning whole project: %d files", len(files))
+
+    files = [f for f in files if Path(f).suffix in EXTENSIONS]
+
+    files = [f for f in files if Path(f).exists()]
+
     logger.info("Found %d files to review", len(files))
 
+    # -------------------------
+    # Process files
+    # -------------------------
     results = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {executor.submit(read_file, f): f for f in files}
@@ -203,12 +246,20 @@ def main() -> None:
             results.append((fpath, review))
             post_pr_comment(fpath, review)
 
+    # -------------------------
+    # Aggregate text
+    # -------------------------
     aggregated_text = "\n".join(f"\n--- {p} ---\n{r}\n" for p, r in results)
+
+    # -------------------------
+    # Comment to PR
+    # -------------------------
     if not PR_NUMBER and GITHUB_TOKEN and GITHUB_REPOSITORY:
         gh = Github(GITHUB_TOKEN)
         repo = gh.get_repo(GITHUB_REPOSITORY)
         repo.create_issue(title="🤖 AI Code Review (No PR)", body=aggregated_text[:65000])
         logger.info("✅ Created GitHub Issue with AI review because PR not found.")
+
     if GITHUB_TOKEN and GITHUB_REPOSITORY and PR_NUMBER:
         try:
             gh = Github(GITHUB_TOKEN)
@@ -221,6 +272,9 @@ def main() -> None:
     else:
         logger.warning("Skipping aggregated PR comment (missing PR number or GitHub credentials).")
 
+    # -------------------------
+    # Write output file
+    # -------------------------
     if args.output:
         try:
             out_path = Path(args.output)
