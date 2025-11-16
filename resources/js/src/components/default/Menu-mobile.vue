@@ -2,7 +2,6 @@
 
 
 </script>
-
 <template>
   <el-dialog>
     <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden">
