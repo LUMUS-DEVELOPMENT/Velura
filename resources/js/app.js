@@ -3,10 +3,11 @@ import '@tailwindplus/elements'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from "@/router/index.js";
-import components from "@/components/ui/index.js"
+import router from "@/router/index.js"
+import UiPlugin from '@/plugins/ui.js'
 
-const app = createApp(App);
-components.map(component => app.component(component.name, component));
+createApp(App)
+    .use(UiPlugin)
+    .use(router)
+    .mount('#app')
 
-app.use(router).mount('#app')

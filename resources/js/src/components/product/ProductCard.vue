@@ -1,6 +1,5 @@
 <script setup>
-import AddToCartButton from "@/components/ui/AddToCartButton.vue";
-import Card from "@/components/ui/card/Card.vue";
+import Card from "@/components/ui/features/card/Card.vue";
 import ProductCardContent from "@/components/product/ProductCardContent.vue";
 
 defineProps({

@@ -1,6 +1,6 @@
 <script setup>
 import ProductList from "@/components/product/ProductList.vue";
-import Filter from "@/components/ui/filters/Filters.vue";
+import Filter from "@/components/ui/features/filters/Filters.vue";
 
 import useLinks from "@/composables/filter/useLinks.js";
 import useCategory from "@/composables/filter/useCategory.js";

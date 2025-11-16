@@ -1,7 +1,5 @@
 <script setup>
 import CartIcon from "@/components/ui/card/CartIcon.vue";
-
-defineOptions({ name: "AddToCartButton"})
 </script>
 
 <template>
