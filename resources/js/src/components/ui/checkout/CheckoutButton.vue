@@ -7,7 +7,7 @@
   </button>
 </template>
 <script setup>
-import CartIcon from "@/components/ui/card/CartIcon.vue";
+import CartIcon from "@/components/ui/features/card/CartIcon.vue";
  defineProps({
   count: Number,
 })
