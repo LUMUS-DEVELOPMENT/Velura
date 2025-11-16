@@ -15,8 +15,8 @@
   </div>
 </template>
 <script setup>
-import SearchForm from "@/components/ui/search/SearchForm.vue";
+import SearchForm from "@/components/ui/features/search/SearchForm.vue";
 import MainNav from "@/components/ui/shared//MainNav.vue";
-import Lang from "@/components/ui/lang/Lang.vue";
-import CheckoutCart from "@/components/ui/checkout/CheckoutCart.vue";
+import Lang from "@/components/ui/features/lang/Lang.vue";
+import CheckoutCart from "@/components/ui/features/checkout/CheckoutCart.vue";
 </script>

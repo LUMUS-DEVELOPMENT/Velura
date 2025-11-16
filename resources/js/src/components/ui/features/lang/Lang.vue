@@ -20,7 +20,7 @@
 </template>
 <script setup>
   import { ref, watch } from "vue";
-  import LangItem from "@/components/ui/lang/LangItem.vue";
+  import LangItem from "@/components/ui/features/lang/LangItem.vue";
   import useLang from "@/composables/lang/useLang.js";
   const  {languages, currentLang} = useLang().value;
 
