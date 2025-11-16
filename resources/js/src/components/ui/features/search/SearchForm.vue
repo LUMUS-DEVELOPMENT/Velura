@@ -12,5 +12,5 @@
   </div>
 </template>
 <script setup>
-import SearchButton from "@/components/ui/search/SearchButton.vue";
+import SearchButton from "@/components/ui/features/search/SearchButton.vue";
 </script>

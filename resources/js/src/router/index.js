@@ -21,6 +21,16 @@ const routes = [
                 name: 'products.show',
                 component: () => import('@/pages/products/Show.vue')
             },
+            {
+                path: 'login',
+                name: 'login',
+                component: () => import('@/pages/auth/Login.vue')
+            },
+            {
+                path: 'register',
+                name: 'register',
+                component: () => import('@/pages/auth/Register.vue')
+            },
         ]
     },
 ]

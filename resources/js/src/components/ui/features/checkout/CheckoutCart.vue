@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from "vue";
 import { RouterLink } from "vue-router";
-import CheckoutItem from "@/components/ui/checkout/CheckoutItem.vue";
-import CheckoutButton from "@/components/ui/checkout/CheckoutButton.vue";
+import CheckoutItem from "@/components/ui/features/checkout/CheckoutItem.vue";
+import CheckoutButton from "@/components/ui/features/checkout/CheckoutButton.vue";
 
 const open = ref(false);
 
