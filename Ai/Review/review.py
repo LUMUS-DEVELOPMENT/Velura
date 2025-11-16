@@ -50,7 +50,15 @@ client = OpenAI(base_url="https://api.cohere.ai/compatibility/v1", api_key=COHER
 # -------------------------
 parser = argparse.ArgumentParser(description="AI Code Review via Cohere Compatibility API")
 parser.add_argument("--files")
-parser.add_argument("--project_dir", default=".", help="Path to project")
+parser.add_argument(
+    "--files",
+    type=str,
+    required=False,
+    nargs="?",
+    const=None,
+    help="File containing list of changed files"
+)
+
 parser.add_argument("--extensions", nargs="+", default=[".php", ".js", ".jsx", ".vue", ".ts", ".tsx", ".html", ".css"], help="Extensions to review")
 parser.add_argument("--exclude_dirs", nargs="+", default=[".git", "node_modules", "venv", "vendor", "_docker", ".py", ".txt", ".yml", ".md", "public"], help="Dirs to exclude")
 parser.add_argument("--max_tokens", type=int, default=1200, help="Max tokens for model response")
