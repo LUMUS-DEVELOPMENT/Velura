@@ -1,13 +1,20 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
     modelValue: [String, Number],
     label: String,
     error: String,
-    type: { type: String, default: 'text' },
+    touched: Boolean,
+    submitted: Boolean,
     override: Boolean
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'blur'])
+
+const showError = computed(() =>
+    props.error && (props.touched || props.submitted)
+)
 </script>
 
 <template>
@@ -16,22 +23,27 @@ const emit = defineEmits(['update:modelValue'])
 
         <input
             v-bind="$attrs"
-            :type="type"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="emit('update:modelValue', $event.target.value)"
+            @blur="emit('blur')"
             :class="props.override
-        ? $attrs.class
-        : [
-            'px-3 py-2 mt-2 border rounded-lg text-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500',
-            $attrs.class,
-            error
-              ? 'border-red-500 focus:ring-red-500'
-              : modelValue
-              ? 'border-green-500 focus:ring-green-500'
-              : 'border-gray-300'
-          ]"
+    ? $attrs.class
+    : [
+        'px-3 py-2 mt-1 border rounded-lg text-sm transition focus:outline-none focus:ring-2',
+        $attrs.class,
+        showError
+            ? 'border-red-500 focus:ring-red-500'
+        : (props.touched && modelValue)
+            ? 'border-green-500 focus:ring-green-500'
+        : 'border-gray-300'
+    ]"
         />
 
-        <span v-if="error" class="text-red-600 text-sm">{{ error }}</span>
+        <span
+            v-if="showError"
+            class="text-red-600 text-sm"
+        >
+            {{ error }}
+        </span>
     </div>
 </template>
