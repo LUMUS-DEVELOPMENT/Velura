@@ -22,6 +22,10 @@
   import { ref, watch } from "vue";
   import LangItem from "@/components/ui/features/lang/LangItem.vue";
   import useLang from "@/composables/lang/useLang.js";
+  import {useRules} from "@/composables/useRules.js";
+
+  const {setFormLang} = useRules();
+
   const  {languages, currentLang} = useLang().value;
 
   const emit = defineEmits(["update:modelValue"]);
@@ -45,5 +49,6 @@
   function select(language) {
     current.value = language;
     emit("update:modelValue", language);
+    setFormLang(language.code);
   }
 </script>
