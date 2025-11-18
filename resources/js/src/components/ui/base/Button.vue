@@ -1,4 +1,6 @@
 <script setup>
+const emit = defineEmits(['click', 'focus', 'blur', 'keydown', 'keyup']);
+
 const props = defineProps({
     disabled: Boolean,
     loading: Boolean,
@@ -20,6 +22,8 @@ const props = defineProps({
             ? 'bg-gray-400 text-white cursor-not-allowed'
             : ($attrs.class ? $attrs.class : 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer')
         ]"
+        @click="emit('click', $event)"
+        @blur="emit('blur')"
     >
         <template v-if="loading">
             <svg class="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

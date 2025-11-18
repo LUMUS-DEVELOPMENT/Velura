@@ -1,42 +1,49 @@
-import { defineStore } from "pinia";
-import { useProducts } from "@/composables/useProducts.js";
+import {defineStore} from "pinia";
+
 export const useCartStore = defineStore("useCartStore", {
-    state: () => ({ items: [] }),
+    state: () => ({
+        items: [],
+    }),
     getters: {
-        count: (state) => state.items.length,
-        total: (state) =>
-            state.items.reduce((sum, item) => Number(sum) + Number(item.price), 0),
+        count: (state) => state.items.reduce((sum, item) => Number(sum) + Number(item.qty), 0),
+        total: (state) => state.items.reduce((sum, item) =>
+            Number(sum) + Number(item.price) * Number(item.qty), 0),
     },
     actions: {
-        loadFromStorage() {
-            const saved = localStorage.getItem("cart");
-            if (saved)  this.items = JSON.parse(saved);
-        },
-        saveToStorage() {
-            localStorage.setItem("cart", JSON.stringify(this.items));
-        },
-        addItem(id) {
-            const { getProduct } = useProducts();
-            const product = getProduct(id);
+        addItem(product) {
             if (!product) {
-                console.error("Product not found", id);
+                console.error("Product not found", product.id);
                 return;
             }
-            this.items.push({
-                id: product.id,
-                image: product.imagePath,
-                title: product.title,
-                price: product.price,
-            });
-            this.saveToStorage();
+
+            const existingInCart = this.find(product.id);
+
+            existingInCart ? existingInCart.qty += 1 : this.items.push({...product, qty: 1})
+
         },
         removeItem(id) {
             this.items = this.items.filter((item) => item.id !== id);
-            this.saveToStorage();
         },
         clear() {
             this.items = [];
-            this.saveToStorage();
         },
+        increaseItemQty(id) {
+            const item = this.find(id);
+            if (item) item.qty++;
+
+        },
+        decreaseItemQty(id) {
+            const item = this.find(id);
+            if (item && item.qty > 1) item.qty--;
+
+        },
+        find(id){
+            return this.items.find(i => i.id === id)
+        }
     },
+    persist: {
+        key: 'cart',
+        paths: ['items'],
+        storage: localStorage
+    }
 });
