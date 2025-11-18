@@ -1,15 +1,13 @@
 <template>
-  <button  class="group flex items-center p-2">
+  <Button class="group flex items-center p-2" :override="true">
       <span class="mr-2">
       <CartIcon />
       </span>
-    <span class="text-sm font-medium" > {{count.count}}</span>
-  </button>
+    <span class="text-sm font-medium" > {{count}}</span>
+  </Button>
 </template>
 <script setup>
-import CartIcon from "@/components/ui/features/card/CartIcon.vue";
- defineProps({
-  count: Number,
-})
-
+import CartIcon from "@/components/Icons/CartIcon.vue";
+import Button from "@/components/ui/base/Button.vue";
+defineProps({ count: Number });
 </script>
