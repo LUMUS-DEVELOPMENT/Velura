@@ -1,6 +1,7 @@
 <script setup>
 defineOptions({ name: 'NavItem' })
 defineProps({
+  id: { type: String, default: null },
   label: String,
   menuId: String,
   menuData: Object,

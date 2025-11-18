@@ -14,11 +14,9 @@ defineProps({
                 :title="product.title"
                 :description="product.description"
                 :price="product.price"
-                :link="{ name: 'products.show', params: { id: product.id} }"
-            >
-
+                :link="{ name: 'products.show', params: { id: product.id} }">
                 <div>
-                    <AddToCartButton/>
+                    <AddToCartButton :id="product.id"/>
                 </div>
             </ProductCardContent>
         </Card>
