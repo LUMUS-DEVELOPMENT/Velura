@@ -41,7 +41,7 @@ function toggleCart() {
                                 v-model.number="item.qty"
                                 class="w-12 text-center"
                             />
-                            <Button @click="cart.increaseItemQty(item.id)" class="px-2 py-1 bg-gray-200 rounded">
+                            <Button @click="cart.increaseItemQty(item.id,item.quantity)" class="px-2 py-1 bg-gray-200 rounded">
                                 +
                             </Button>
 

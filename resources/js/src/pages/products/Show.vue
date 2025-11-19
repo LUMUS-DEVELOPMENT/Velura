@@ -2,12 +2,13 @@
 import {useRoute} from "vue-router";
 import {useProducts} from "@/composables/useProducts.js";
 import ProductCardContent from "@/components/product/ProductCardContent.vue";
+import {useCartStore} from "@/stores/useCartStore.js";
 
 const route = useRoute()
 const { getProduct } = useProducts()
 
 const product = getProduct(route.params.id)
-
+const cart = useCartStore()
 </script>
 
 <template>
@@ -21,8 +22,9 @@ const product = getProduct(route.params.id)
                 :price="product.price"
                 :link="{ name: 'products.show', params: { id: product.id } }"
             >
-                <div>
-                    <AddToCartButton />
+                <div class="flex justify-between">
+                  <span class="p-2">Quantity: <b>{{product.quantity}}</b></span>
+                    <AddToCartButton @click="cart.addItem(product)" />
                 </div>
             </ProductCardContent>
 
