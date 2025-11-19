@@ -16,34 +16,58 @@ export const useCartStore = defineStore("useCartStore", {
                 return;
             }
 
-            const existingInCart = this.find(product.id);
+            const existingInCart = this.items.find(i => i.id === product.id);
 
             existingInCart ? existingInCart.qty += 1 : this.items.push({...product, qty: 1})
 
         },
-        removeItem(id) {
-            this.items = this.items.filter((item) => item.id !== id);
+        removeItem(item) {
+            this.items = this.items.filter(i => i !== item);
         },
         clear() {
             this.items = [];
         },
-        increaseItemQty(id, quantity) {
+        setQty(item, value, blur = false) {
+            if (!item) return;
 
-            const item = this.find(id);
-            if (item) item.qty++;
-            if(item.qty > quantity) item.qty--;
+            const digits = value.toString().replace(/\D/g, "");
+
+
+            if (digits === "") {
+                item.qty = blur ? 1 : "";
+                return;
+            }
+
+            let qty = Number(digits);
+
+            if (qty < 1) qty = 1;
+            if (qty > Number(item.quantity)) qty = Number(item.quantity);
+
+
+            item.qty = qty;
         },
-        decreaseItemQty(id) {
-            const item = this.find(id);
+        increaseItemQty(item) {
+            if (!item) return;
+            if (item && item.qty < item.quantity) item.qty++;
+        },
+        decreaseItemQty(item) {
+            if (!item) return;
             if (item && item.qty > 1) item.qty--;
         },
-        find(id){
-            return this.items.find(i => i.id === id)
-        }
     },
     persist: {
         key: 'cart',
         paths: ['items'],
-        storage: localStorage
-    }
+        storage: localStorage,
+        afterHydrate: (ctx) => {
+            const store = ctx.store;
+
+            store.items = store.items.map(item => {
+                if (item.qty === "" || item.qty === null || item.qty === undefined) {
+                    item.qty = 1;
+                }
+                return item;
+            });
+        },
+    },
 });

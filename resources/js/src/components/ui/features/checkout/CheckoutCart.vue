@@ -33,19 +33,20 @@ function toggleCart() {
                     >
 
                         <div class="flex items-center gap-1 sm:gap-2">
-                            <Button @click="cart.decreaseItemQty(item.id)" class="px-2 py-1 bg-gray-200 rounded">
+                            <Button @click="cart.decreaseItemQty(item)" class="px-2 py-1 bg-gray-200 rounded">
                                 -
                             </Button>
                             <Input
-
                                 v-model.number="item.qty"
+                                @update:modelValue="value => cart.setQty(item, value)"
+                                @blur="() => cart.setQty(item, item.qty, true)"
                                 class="w-12 text-center"
                             />
-                            <Button @click="cart.increaseItemQty(item.id,item.quantity)" class="px-2 py-1 bg-gray-200 rounded">
+                            <Button @click="cart.increaseItemQty(item)" class="px-2 py-1 bg-gray-200 rounded">
                                 +
                             </Button>
 
-                            <Button type="button" @click="cart.removeItem(item.id)" :override="true">
+                            <Button type="button" @click="cart.removeItem(item)" :override="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
