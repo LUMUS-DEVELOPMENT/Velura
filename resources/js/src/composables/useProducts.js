@@ -7,6 +7,7 @@ const products = ref([
         description: 'Lorem Ipsum Lorem Ipsum',
         imagePath: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-01.jpg",
         price: "35",
+        quantity: "3",
     },
     {
         id: 2,
@@ -14,6 +15,7 @@ const products = ref([
         description: 'Lorem Ipsum Lorem Ipsum',
         imagePath: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-02.jpg",
         price: "35",
+        quantity: "6",
     },
     {
         id: 3,
@@ -21,6 +23,7 @@ const products = ref([
         description: 'Lorem Ipsum Lorem Ipsum',
         imagePath: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-03.jpg",
         price: "35",
+        quantity: "15",
     },
     {
         id: 4,
@@ -28,6 +31,7 @@ const products = ref([
         description: 'Lorem Ipsum Lorem Ipsum',
         imagePath: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-04.jpg",
         price: "35",
+        quantity: "5",
     }
 ]);
 

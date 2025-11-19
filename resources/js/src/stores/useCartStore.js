@@ -27,15 +27,15 @@ export const useCartStore = defineStore("useCartStore", {
         clear() {
             this.items = [];
         },
-        increaseItemQty(id) {
+        increaseItemQty(id, quantity) {
+
             const item = this.find(id);
             if (item) item.qty++;
-
+            if(item.qty > quantity) item.qty--;
         },
         decreaseItemQty(id) {
             const item = this.find(id);
             if (item && item.qty > 1) item.qty--;
-
         },
         find(id){
             return this.items.find(i => i.id === id)

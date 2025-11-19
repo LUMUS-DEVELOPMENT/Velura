@@ -6,12 +6,11 @@ import App from './App.vue'
 import router from "@/router/index.js"
 import UiPlugin from '@/plugins/ui.js'
 import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import directives from "@/directives/directives.js";
+
 const app = createApp(App)
 const pinia = createPinia()
-
-pinia.use(piniaPluginPersistedstate)
-
+directives.map(directive => app.directive(directive.name, directive))
 app.use(pinia)
     .use(UiPlugin)
     .use(router)

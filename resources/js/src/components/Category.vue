@@ -40,10 +40,10 @@ defineProps({
               <img :src="collection.image"  :alt="collection.name"
                    class="w-full rounded-lg bg-white object-cover group-hover:opacity-75 max-sm:h-80 sm:aspect-2/1 lg:aspect-square" />
               <h3 class="mt-6 text-sm text-gray-500">
-                <a :href="collection.path">
+                <router-link :to="collection.path">
                   <span class="absolute inset-0"></span>
                   {{collection.name}}
-                </a>
+                </router-link>
               </h3>
               <p class="text-base font-semibold text-gray-900">{{collection.description}}</p>
             </div>

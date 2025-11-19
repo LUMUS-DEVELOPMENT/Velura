@@ -4,7 +4,7 @@
       <form class="flex items-center max-w-lg mx-auto space-x-2">
         <label for="voice-search" class="sr-only">Search</label>
         <div class="relative w-full ">
-          <input type="text" id="input-search" class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search" required />
+          <input v-focus type="text" id="input-search" class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search" required />
         </div>
       </form>
     </el-disclosure>
