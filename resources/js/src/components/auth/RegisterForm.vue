@@ -1,14 +1,16 @@
 <script setup>
 import {useAuthForm} from '@/composables/useAuthForm.js'
+import Checkbox from "@/components/ui/base/Checkbox.vue";
 
 
 const { form, errors, touched, submitted, isValid, touch, submit } = useAuthForm(
-    ['name', 'email', 'password', 'confirmPassword'],
+    ['name', 'email', 'password', 'confirmPassword', 'remember'],
     {
         name: ['required'],
         email: ['required', 'email'],
         password: ['required', ['minLength', 6],['maxLength', 12]],
-        confirmPassword: ['required', ['match', 'password']]
+        confirmPassword: ['required', ['match', 'password']],
+        remember: []
     }
 )
 
@@ -63,6 +65,11 @@ const register = () => {
                 :touched="touched.confirmPassword"
                 :submitted="submitted"
                 @blur="touch('confirmPassword')"
+            />
+
+            <Checkbox
+                v-model="form.remember"
+                label="Remember me"
             />
 
             <Button type="submit" :disabled="!isValid">

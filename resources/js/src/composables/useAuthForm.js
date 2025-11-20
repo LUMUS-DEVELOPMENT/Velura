@@ -6,7 +6,10 @@ export function useAuthForm(fields, fieldRules = {}) {
     const { rules, getLang } = useRules()
 
     const createReactive = (initialValue) =>
-        reactive(Object.fromEntries(fields.map(f => [f, initialValue])))
+        reactive(Object.fromEntries(fields.map(f => {
+            const isCheckbox = fieldRules[f]?.includes('accepted')
+            return [f, isCheckbox ? false : initialValue]
+        })))
 
     const form = createReactive('')
     const errors = createReactive('')
