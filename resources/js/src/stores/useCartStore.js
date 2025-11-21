@@ -1,8 +1,10 @@
 import {defineStore} from "pinia";
+import {useProductStore} from "@/stores/useProductStore.js";
 
 export const useCartStore = defineStore("useCartStore", {
     state: () => ({
         items: [],
+        isOpen: false
     }),
     getters: {
         count: (state) => state.items.reduce((sum, item) => Number(sum) + Number(item.qty), 0),
@@ -10,15 +12,33 @@ export const useCartStore = defineStore("useCartStore", {
             Number(sum) + Number(item.price) * Number(item.qty), 0),
     },
     actions: {
+        toggleCart() {
+            this.isOpen = !this.isOpen;
+        },
+
         addItem(product) {
-            if (!product) {
-                console.error("Product not found", product.id);
+            if (!product || !product.id) {
+                console.warn("Invalid product passed to addItem:", product);
                 return;
             }
 
-            const existingInCart = this.items.find(i => i.id === product.id);
+            const maxQty = Number(product.quantity)
 
-            existingInCart ? existingInCart.qty += 1 : this.items.push({...product, qty: 1})
+            const item = this.items.find(i => i.id === product.id);
+
+            if (item) {
+                if (item.qty < maxQty) {
+                    item.qty++;
+                } else {
+                    console.warn(`Cannot add more than ${maxQty} items for product ${product.id}`);
+                }
+                return;
+            }
+
+            this.items.push({
+                ...product,
+                qty: 1,
+            });
 
         },
         removeItem(item) {

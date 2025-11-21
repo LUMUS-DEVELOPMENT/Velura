@@ -1,15 +1,20 @@
 <script setup>
-import {useProducts} from "@/composables/useProducts.js";
 import ProductCard from "@/components/product/ProductCard.vue";
+import {useProductStore} from "@/stores/useProductStore.js";
+import {onMounted} from "vue";
 
-const {products} = useProducts()
 
+const store = useProductStore();
+
+onMounted( () => {
+     store.getAll()
+})
 
 </script>
 
 <template>
     <ProductCard
-        v-for="product in products"
+        v-for="product in store.products"
         :product="product"
         :key="product.id">
     </ProductCard>
