@@ -1,5 +1,4 @@
 <script setup>
-import {ref, watch} from "vue";
 import {RouterLink} from "vue-router";
 import CheckoutItem from "@/components/ui/features/checkout/CheckoutItem.vue";
 import CheckoutButton from "@/components/ui/features/checkout/CheckoutButton.vue";
@@ -7,19 +6,13 @@ import {useCartStore} from "@/stores/useCartStore.js";
 
 const cart = useCartStore();
 
-const open = ref(false);
-
-function toggleCart() {
-    open.value = !open.value;
-}
-
 </script>
 <template>
     <div class="relative">
-        <CheckoutButton :count="cart.count" @click="toggleCart"/>
+        <CheckoutButton :count="cart.count" @click="cart.toggleCart"/>
 
         <transition name="fade">
-            <div v-if="open"
+            <div v-if="cart.isOpen"
                  class="absolute right-0 mt-2 w-112 bg-white shadow-xl rounded-lg border p-3 z-50">
                 <h3 class="font-semibold text-gray-800 mb-2">Your Cart</h3>
                 <div v-if="cart.count === 0" class="text-sm text-gray-500 py-2 text-center">

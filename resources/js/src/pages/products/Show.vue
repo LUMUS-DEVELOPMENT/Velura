@@ -1,15 +1,21 @@
 <script setup>
-import {useRoute} from "vue-router";
-import {useProducts} from "@/composables/useProducts.js";
+import { useRoute } from "vue-router";
+import { onMounted, computed } from "vue";
+import { useProductStore } from "@/stores/useProductStore.js";
 import ProductCardContent from "@/components/product/ProductCardContent.vue";
-import {useCartStore} from "@/stores/useCartStore.js";
+import { useCartStore } from "@/stores/useCartStore.js";
 
 const route = useRoute()
-const { getProduct } = useProducts()
-
-const product = getProduct(route.params.id)
+const store = useProductStore()
 const cart = useCartStore()
+
+onMounted(() => {
+    store.getById(route.params.id)
+})
+
+const product = computed(() => store.product)
 </script>
+
 
 <template>
     <div class="w-full">

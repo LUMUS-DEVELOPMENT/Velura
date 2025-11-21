@@ -102,7 +102,6 @@ const color = useColor();
           />
           <div class="grid grid-cols-3 gap-6">
             <ProductList/>
-            <ProductList/>
           </div>
         </div>
       </section>
