@@ -8,14 +8,17 @@ const messages = {
         email: 'Invalid email',
         minLength: (len) => `Must be at least ${len} characters`,
         maxLength: (len) => `Must be at most ${len} characters`,
-        match: 'Password fields do not match'
+        match: 'Password fields do not match',
+        accepted: 'You must accept the terms'
+
     },
     ru: {
         required: 'Поле обязательно',
         email: 'Неверный email',
         minLength: (len) => `Минимум ${len} символов`,
         maxLength: (len) => `Максимум ${len} символов`,
-        match: 'Пароли не совпадают'
+        match: 'Пароли не совпадают',
+        accepted: 'Вы должны принять условия'
     }
 }
 
@@ -29,7 +32,8 @@ export function useRules() {
         maxLength: (len) => (v) =>
             v.length <= len ? '' : messages[state.lang].maxLength(len),
         match: (otherField) => (v, form) =>
-            v === form[otherField] ? '' : messages[state.lang].match
+            v === form[otherField] ? '' : messages[state.lang].match,
+        accepted: (v) => (v ? '' : messages[state.lang].accepted)
     }))
 
     const setFormLang = (newLang) => {
